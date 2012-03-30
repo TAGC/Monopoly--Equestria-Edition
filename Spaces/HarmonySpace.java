@@ -1,0 +1,127 @@
+package Spaces;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Scanner;
+import java.util.Set;
+
+import Cards.EventCard;
+import Cards.EventCard.EventCardType;
+import General.Board;
+import General.Player;
+import General.Util;
+
+public class HarmonySpace implements Space {
+	
+	private final Set<Player> players = new HashSet<Player>();
+	
+	@Override
+	public void playerLands(Player player) {
+		Scanner input;
+		EventCard card;
+		
+		drawCard();
+		System.out.println();
+		
+		input = new Scanner(System.in);
+		System.out.println("Please press Enter to draw a Harmony Chest card");
+		
+		input.nextLine();
+		
+		System.out.println("Drawing...");
+		Util.pause((long)(Util.getRandom()*2000 + 500));
+		
+		card = Board.getEventCard(EventCardType.HARMONY);
+		card.applyToPlayer(player);
+	}
+	
+	private void drawCard() {
+		
+		String cardString;
+		
+		cardString  = "#########################\n";
+		cardString += "#                       #\n";
+		cardString += "#     H A R M O N Y     #\n";
+		cardString += "#                       #\n";
+		cardString += "#       @ @   @ @       #\n";
+		cardString += "#     @     @     @     #\n";
+		cardString += "#    @             @    #\n";
+		cardString += "#    @             @    #\n";
+		cardString += "#    @             @    #\n";
+		cardString += "#     @           @     #\n";
+		cardString += "#       @       @       #\n";
+		cardString += "#         @   @         #\n";
+		cardString += "#          @ @          #\n";
+		cardString += "#           @           #\n";
+		cardString += "#                       #\n";
+		cardString += "#                       #\n";
+		cardString += "#########################\n";
+		
+		System.out.println(cardString);
+	}
+
+	@Override
+	public void display(int line) {
+		String display;
+		String playerLine;
+		
+		if (players.isEmpty()) {
+			playerLine = "#                                   #\n";
+		} else {
+			playerLine = "#     O - ";
+			Iterator<Player> iter = players.iterator();
+			while (iter.hasNext()) {
+				playerLine += iter.next().getName() + ", ";
+			}
+			
+			playerLine = playerLine.substring(0, playerLine.length()-2);
+			while (playerLine.length() < LINEWIDTH - 1) {
+				playerLine += " ";
+			}
+			
+			while (playerLine.length() > LINEWIDTH - 1) {
+				playerLine = playerLine.substring(0,
+						playerLine.length()-4);
+				playerLine += "...";
+			}
+			
+			playerLine += "#\n";
+		}
+		
+		display  = "#####################################\n";
+		display += "#                                   #\n";
+		display += "# @  @  @@  @@@  @  @ @@@@ @  @ @  @#\n";
+		display += "# @  @ @  @ @  @ @@@@ @  @ @@ @  @@ #\n";
+		display += "# @@@@ @  @ @@@  @  @ @  @ @@@@  @  #\n";
+		display += "# @  @ @@@@ @ @  @  @ @  @ @ @@  @  #\n";
+		display += "# @  @ @  @ @  @ @  @ @@@@ @  @  @  #\n";
+		display += "#                                   #\n";
+		display += "# @@@@@  @   @  @@@@@  @@@@@  @@@@@ #\n";
+		display += "# @      @   @  @      @        @   #\n";
+		display += "# @      @@@@@  @@@    @@@@@    @   #\n";
+		display += "# @      @   @  @          @    @   #\n";
+		display += "# @@@@@  @   @  @@@@@  @@@@@    @   #\n";
+		display += "#                                   #\n";
+		display += "#        Draw a Harmony Card        #\n";
+		display += "#                                   #\n";
+		display += playerLine;
+		display += "#####################################\n";
+		
+		String[] lines;
+		lines = display.split("\n");
+		System.out.print(lines[line]);
+	}
+	
+	@Override
+	public void addPlayer(Player player) {
+		players.add(player);
+	}
+
+	@Override
+	public void removePlayer(Player player) {
+		if (players.contains(player)) {
+			players.remove(player);
+		}
+	}
+	
+}
