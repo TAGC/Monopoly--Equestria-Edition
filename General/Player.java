@@ -139,10 +139,18 @@ public class Player {
 		board.handleEvents(this);
 	}
 	
-	public void setPosition(int position) {
+	public void setPosition(int position, Board board) {
+		Space currentSpace;
+		
+		currentSpace = board.getSpaces()[getBoardPosition()];
+		currentSpace.removePlayer(this);
+		
 		while (position < 0) position = Board.BOARDSPACES + position;
 		position %= Board.BOARDSPACES;
 		boardPosition = position;
+		
+		currentSpace = board.getSpaces()[getBoardPosition()];
+		currentSpace.addPlayer(this);
 	}
 	
 	public void changeCash(int amount) {

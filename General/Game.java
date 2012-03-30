@@ -344,7 +344,7 @@ public class Game {
 		while (!(board.getSpaces()[player.getBoardPosition()] 
 				instanceof MoonSpace)) {
 			player.setPosition((player.getBoardPosition() + 1) 
-					% Board.BOARDSPACES);
+					% Board.BOARDSPACES, board);
 		}
 		
 		if (player.getBanishmentAvoidChances() > 0) {

@@ -166,7 +166,8 @@ public class EventCard {
 		case HARMONY_10:
 			int playerPosition;
 			playerPosition = player.getBoardPosition();
-			player.setPosition(playerPosition - 2*player.getLastTotalRoll());
+			player.setPosition(playerPosition - 2*player.getLastTotalRoll(),
+					board);
 			return;
 		case HARMONY_11:
 			player.changeCash(50);
@@ -282,7 +283,7 @@ public class EventCard {
 		case 2:
 			System.out.println("Your voice has deepened! You move " +
 					"back 10 spaces, but gain 100 bits");
-			player.setPosition(playerPosition - 10);
+			player.setPosition(playerPosition - 10, board);
 			player.changeCash(100);
 			return;
 		case 3:
@@ -292,12 +293,12 @@ public class EventCard {
 				deltaPosition = Util.getRandom(11) - 5;
 			} while (deltaPosition != 0);
 			
-			player.setPosition(playerPosition + deltaPosition);
+			player.setPosition(playerPosition + deltaPosition, board);
 			return;
 		case 4:
 			System.out.println("Your wings have gone all wonky! " +
 					"Move forward 8 spaces but lose 20 bits");
-			player.setPosition(playerPosition + 8);
+			player.setPosition(playerPosition + 8, board);
 			player.changeCash(-20);
 			return;
 		case 5:
@@ -322,7 +323,7 @@ public class EventCard {
 				deltaPosition = Util.getRandom(40);
 			} while (deltaPosition != 0);
 			
-			player.setPosition(playerPosition + deltaPosition);
+			player.setPosition(playerPosition + deltaPosition, board);
 			return;
 		default:
 			return;
@@ -401,12 +402,12 @@ public class EventCard {
 			player.changeCash(GoSpace.PASSGOBONUS);
 		}
 		
-		player.setPosition(propertyIndex);
+		player.setPosition(propertyIndex, board);
 	}
 	
 	/*
 	 * @param player
-	 *        	the player that pays and rerolls
+	 *        	the player that pays and re-rolls
 	 * 
 	 * Transfers 50 bits from the player to the person
 	 * that plays after them. Gives them an extra turn

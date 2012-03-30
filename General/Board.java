@@ -137,6 +137,12 @@ public class Board {
 		boardPosition = player.getBoardPosition();
 		space         = spaces[boardPosition];
 		
+		for (int i = 0; i < Space.DISPLAYLINES; i++) {
+			space.display(i, false);
+			System.out.print("\n");
+		}
+		System.out.println();
+		
 		space.playerLands(player);
 	}
 	
@@ -161,40 +167,43 @@ public class Board {
 	public void display() {
 		Space space;
 		
-		//top row of properties
+		//top row of spaces
 		for (int i = 0; i < Space.DISPLAYLINES; i++) {
 			for (int j = (BOARDSPACES/4); j <= (BOARDSPACES/4 + 10); j++) {
 				space = spaces[j];
-				space.display(i);
+				space.display(i, true);
 			}
 			System.out.print("\n");
 		}
 		
-		//middle properties
+		//middle spaces
 		Space pairing;
 		for (int i = (BOARDSPACES/4 - 1); i > 0; i--) {
 			for (int j = 0; j < Space.DISPLAYLINES; j++) {
 				space = spaces[i];
 				pairing = spaces[BOARDSPACES/2 + (BOARDSPACES/4 - i)];
-				space.display(j);
+				space.display(j, true);
 				for (int k = 0; k < (9 * Space.LINEWIDTH); k++) {
 					System.out.print(" ");
 				}
-				pairing.display(j);
+				pairing.display(j, true);
 				System.out.print("\n");
 			}
 		}
 		
-		//bottom row of properties
+		//bottom row of spaces
 		for (int i = 0; i < Space.DISPLAYLINES; i++) {
 			for (int j = 0; j <= BOARDSPACES/4; j++) {
 				space = spaces[(BOARDSPACES - j) % BOARDSPACES];
-				space.display(i);
+				space.display(i, true);
 			}
 			System.out.print("\n");
 		}
 	}
 	
+	/*
+	 * Constructs the properties / Chance cards / Harmony Cards
+	 */
 	public static void initialise() {
 		spaces = new Space[BOARDSPACES];
 		

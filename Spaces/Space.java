@@ -39,6 +39,10 @@ public interface Space {
 	/*
 	 * @param line
 	 *     	  	the line of ASCII characters to display
+	 *     
+	 * @param showPlayers
+	 *          a boolean parameter specifying whether
+	 *          the players should be displayed or not
 	 *
 	 * This method should be called when a graphical
 	 * representation of the board is needed.
@@ -49,5 +53,5 @@ public interface Space {
 	 * Space displays should consist of 18 lines of 
 	 * ASCII, all of 37 character width
 	 */
-	public void display(int line);
+	public void display(int line, boolean showPlayers);
 }

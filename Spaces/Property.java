@@ -100,8 +100,6 @@ public class Property implements Space{
 	
 	@Override
 	public void playerLands(Player renter) {
-		System.out.println("Location: " + name + "\n");
-		
 		if (renter.equals(owner)) return;
 		
 		if (owner == null && renter.getCash() > value) {
@@ -193,25 +191,30 @@ public class Property implements Space{
 		owner.changeCash(charge);
 		
 		String outcome;
-		outcome = String.format("%s pays %s %s bits\n", renter, owner, charge);
+		outcome = String.format("%s pays %s %s bits\n", renter.getName(),
+				owner.getName(), charge);
 		System.out.println(outcome);
 	}
 	
 	@Override
 	public String toString() {
 		String stringRep;
-		if (type == PropertyType.NORMAL) {
+		if (getType() == PropertyType.NORMAL) {
 			stringRep = String.format("%s: %s (stables: %s) (group: %s)",
 					name, value, numStables, group.name().replace("_", " "));
+		} else if (getType() == PropertyType.UTILITY) {
+			stringRep = String.format("%s: %s (Utility)",
+					name, value);
 		} else {
 			stringRep = String.format("%s: %s",
 					name, value);
 		}
+		
 		return stringRep;
 	}
 
 	@Override
-	public void display(int line) {
+	public void display(int line, boolean showPlayers) {
 		String display;
 		
 		int displayLength = 37;
@@ -248,7 +251,7 @@ public class Property implements Space{
 		
 		String playerLine;
 		
-		if (players.isEmpty()) {
+		if (players.isEmpty() || !showPlayers) {
 			playerLine = "#                                   #\n";
 		} else {
 			playerLine = "#     O - ";

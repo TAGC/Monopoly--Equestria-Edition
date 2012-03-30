@@ -20,7 +20,7 @@ public class MoonSpace implements Space {
 	}
 
 	@Override
-	public void display(int line) {
+	public void display(int line, boolean showPlayers) {
 		String display;
 		String playerLineFree;
 		String playerLineBanished;
@@ -30,7 +30,7 @@ public class MoonSpace implements Space {
 			if (player.isBanished()) banished++;
 		}
 		
-		if (players.size() - banished == 0) {
+		if (players.size() - banished == 0 || !showPlayers) {
 			playerLineFree = "#                                   #\n";
 		} else {
 			playerLineFree = "#     O - ";
@@ -58,7 +58,7 @@ public class MoonSpace implements Space {
 			playerLineFree += "#\n";
 		}
 		
-		if (banished == 0) {
+		if (banished == 0 || !showPlayers) {
 			playerLineBanished = "#       #                           #\n";
 		} else {
 			playerLineBanished = "#       #     O - ";

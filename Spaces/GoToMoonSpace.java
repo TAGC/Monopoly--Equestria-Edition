@@ -9,13 +9,13 @@ public class GoToMoonSpace implements Space {
 		player.setBanished(true);
 		
 		String outcome;
-		outcome = String.format("*%s is banished to the Moon!",
+		outcome = String.format("*%s is banished to the Moon!*",
 				player.getName());
 		System.out.println(outcome);
 	}
 
 	@Override
-	public void display(int line) {
+	public void display(int line, boolean showPlayers) {
 		String display;
 		
 		display  = "#####################################\n";

@@ -20,11 +20,11 @@ public class FreeSpace implements Space {
 	}
 
 	@Override
-	public void display(int line) {
+	public void display(int line, boolean showPlayers) {
 		String display;
 		String playerLine;
 		
-		if (players.isEmpty()) {
+		if (players.isEmpty() || !showPlayers) {
 			playerLine = "#                                   #\n";
 		} else {
 			playerLine = "#     O - ";

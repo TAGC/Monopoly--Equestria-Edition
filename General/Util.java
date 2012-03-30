@@ -5,6 +5,14 @@ import java.util.Scanner;
 
 public class Util {
 	
+	/*
+	 * @return a boolean parameter: true if the player expresses "yes",
+	 *                              false if the player expresses "no"
+	 * 
+	 * This method should be called when a yes/no choice is presented
+	 * to a player. This method will receive input from the player
+	 * expressing if they accept the choice or not
+	 */
 	public static boolean getResponse() {
 		String response;
 		Scanner input;
@@ -21,6 +29,17 @@ public class Util {
 		}
 	}
 	
+	/*
+	 * @param upperLimit
+	 *        	establishes the number of options available to the player
+	 *          [1..upperLimit]
+	 * 
+	 * @return the option the player selects, or 0 if the player cancels
+	 * 
+	 * This method should be called when the player is presented with
+	 * a range of options, and the player is asked to pick one of them
+	 * or cancel
+	 */
 	public static int getOptionNum(int upperLimit) {
 		Scanner input;
 		String data;
@@ -51,6 +70,14 @@ public class Util {
 		return option;
 	}
 	
+	/*
+	 * @param time
+	 *        	the time in milliseconds to pause the execution
+	 *          of the program for
+	 * 
+	 * Pauses the execution of the program for a
+	 * specified length of time
+	 */
 	public static void pause(long time) {
 		try {
 			Thread.sleep(time);
@@ -59,6 +86,16 @@ public class Util {
 		}
 	}
 	
+	/*
+	 * @param upperLimit
+	 *        	establishes the range of integer values to return
+	 *          a value from [0..upperLimit)
+	 * 
+	 * @return an integer value in the range [0..upperLimit)
+	 * 
+	 * Returns a random integer value. Acts exactly as 
+	 * Random.nextInt(int upperLimit) would.
+	 */
 	public static int getRandom(int upperLimit) {
 		Random gen;
 		int num;
@@ -68,6 +105,9 @@ public class Util {
 		return num;
 	}
 	
+	/*
+	 * @return a float in the range [0..1)
+	 */
 	public static float getRandom() {
 		Random gen;
 		float num;
