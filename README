@@ -1,12 +1,12 @@
 
 Monopoly: Equestria Edition - a My Little Pony: Friendship is Magic version 
-          of Monopoly, coded in Java
+                              of Monopoly, coded in Java
 Created by TAGC (dave_fallah@yahoo.co.uk)
 Last update: 30/03/2012
 Description: This is designed to be a simple ASCII-graphics Monopoly game, 
              mostly intended as Java practice. As of the latest push, the 
-			 game is working at least at some level, but requires further
-			 testing to remove bugs
+             game is working at least at some level, but requires further
+             testing to remove bugs
 Copyright:   No copyright
 Forking:     Feel free to fork the project. Please credit me if you do
              so
