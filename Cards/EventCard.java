@@ -679,6 +679,8 @@ public class EventCard {
 		total = 25;
 		
 		for (Property property : player.getProperties()) {
+			if (property.getType() != PropertyType.NORMAL) continue;
+			
 			if (property.getGroup().equals(PropertyGroup.APPLEJACK)) {
 				total += 50;
 			}

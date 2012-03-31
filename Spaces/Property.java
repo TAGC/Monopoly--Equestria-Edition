@@ -13,14 +13,24 @@ public class Property implements Space{
 	{ NORMAL, STATION, UTILITY };
 	
 	public static enum PropertyGroup
-	{ FLUTTERSHY, RAINBOW_DASH, TWILIGHT_SPARKLE,
-		RARITY, APPLEJACK, PINKIE_PIE, LUNA,
-		CELESTIA
+	{ FLUTTERSHY (3), RAINBOW_DASH (3), TWILIGHT_SPARKLE (3),
+		RARITY (3), APPLEJACK (2), PINKIE_PIE (3), LUNA (3),
+		CELESTIA (2);
+		
+		private int propsInSet;
+	
+		PropertyGroup(int propsInSet) {
+			this.propsInSet = propsInSet;
+		}
+		
+		public int getPropsInSet() {
+			return propsInSet;
+		}
 	};
 	
-	private static final double SELLVALCOEF   = 0.75;
-	private static final double STABLEVALCOEF = 1.2;
-	public static final int     MAXSTABLES    = 5; 
+	public static final double SELLVALCOEF   = 0.75;
+	public static final double STABLEVALCOEF = 2.2;
+	public static final int     MAXSTABLES   = 4; 
 	
 	private final Set<Player> players = new HashSet<Player>();
 	
@@ -98,48 +108,41 @@ public class Property implements Space{
 		return (int)sellValue;
 	}
 	
-	@Override
-	public void playerLands(Player renter) {
-		if (renter.equals(owner)) return;
+	public boolean setOwned() {
+		int propsInSet, propCount;
+		PropertyGroup propGroup;
+		propsInSet = getGroup().getPropsInSet();
 		
-		if (owner == null && renter.getCash() > value) {
-			System.out.println("Would you like to purchase this property" +
-					" for " + value + " bits? Y/N");
-			if (Util.getResponse()) {
-				purchase(renter);
-			}
-			return;
-		} else if (owner == null) return;
-		
-		Iterator<Property> iter;
-		int lastRoll, multiplier, charge; 
-		boolean setOwned;
-		
-		switch(type) {
-		case NORMAL:
-			//charge = 10% of value + additional for each stable
-			iter = owner.getProperties().iterator();
-			
-			setOwned = true;
-			while(iter.hasNext()) {
-				Property nextProperty;
-				
-				nextProperty = iter.next();
-				if (nextProperty.getType() == PropertyType.NORMAL 
-					&& !nextProperty.getGroup().equals(getGroup()) 
-					&& !nextProperty.getOwner().equals(owner)) {
-						setOwned = false;
+		propCount = 0;
+		for (Property aProperty : getOwner().getProperties()) {
+			if (aProperty.getType() == PropertyType.NORMAL) {
+				propGroup = aProperty.getGroup();
+				if (propGroup.equals(getGroup())) {
+					propCount++;
 				}
 			}
-				
+		}
+			
+		return propCount == propsInSet;
+	}
+	
+	public int getCharge(int lastRoll, int stableNumber, 
+			boolean setIsOwned) {
+		int charge, multiplier;
+		Iterator<Property> iter;
+		switch (getType()) {
+		case NORMAL:
+			//charge = 10% of value + additional for each stable
 			//if owner possesses all properties of a group, increase rent
-			if (setOwned) {
-				charge = (int)(value / 5 * Math.pow(STABLEVALCOEF, numStables));
+			if (setIsOwned && stableNumber == 0) {
+				charge = (int)(value / 5);
 			} else {
-				charge = (int)(value / 10 * Math.pow(STABLEVALCOEF, numStables));
+				charge = (int)(value / 10 * Math.pow(STABLEVALCOEF, stableNumber));
 			}
 			break;
 		case STATION:
+			if (owner == null) return 0;
+			
 			//charge = 100 if owner possesses no other stations,
 			//         200 if owner possesses 1 other station,
 			//         400 if owner possesses 2 other stations,
@@ -158,6 +161,7 @@ public class Property implements Space{
 			}
 			break;
 		case UTILITY:
+			if (owner == null) return 0;
 			//charge = 20 * renter dice roll value if owner 
 			//              has just this utility
 			//       = 50 * renter dice roll value if owner 
@@ -180,13 +184,32 @@ public class Property implements Space{
 				}
 			}
 			
-			lastRoll = renter.getLastTotalRoll();
-			charge   = multiplier * lastRoll;
+			charge = multiplier * lastRoll;
 			break;
 		default:
-			return;
+			return 0;
 		}
+		
+		return charge;
+	}
 	
+	@Override
+	public void playerLands(Player renter) {
+		if (renter.equals(owner)) return;
+		
+		if (owner == null && renter.getCash() > value) {
+			System.out.println("Would you like to purchase this property" +
+					" for " + value + " bits? Y/N");
+			if (Util.getResponse()) {
+				purchase(renter);
+			}
+			return;
+		} else if (owner == null) return;
+		
+		int charge;
+		charge = getCharge(renter.getLastTotalRoll(), getNumStables(),
+				setOwned());
+		
 		renter.changeCash(-charge);
 		owner.changeCash(charge);
 		

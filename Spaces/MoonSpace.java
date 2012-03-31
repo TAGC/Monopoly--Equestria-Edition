@@ -27,7 +27,7 @@ public class MoonSpace implements Space {
 		
 		int banished = 0;
 		for (Player player : players) {
-			if (player.isBanished()) banished++;
+			if (player.getBanished() > 0) banished++;
 		}
 		
 		if (players.size() - banished == 0 || !showPlayers) {
@@ -38,7 +38,7 @@ public class MoonSpace implements Space {
 			Player nextPlayer;
 			while (iter.hasNext()) {
 				nextPlayer = iter.next();
-				if (nextPlayer.isBanished()) continue;
+				if (nextPlayer.getBanished() > 0) continue;
 				
 				playerLineFree += nextPlayer.getName() + ", ";
 			}
@@ -66,7 +66,7 @@ public class MoonSpace implements Space {
 			Player nextPlayer;
 			while (iter.hasNext()) {
 				nextPlayer = iter.next();
-				if (!nextPlayer.isBanished()) continue;
+				if (nextPlayer.getBanished() == 0) continue;
 				
 				playerLineBanished += nextPlayer.getName() + ", ";
 			}

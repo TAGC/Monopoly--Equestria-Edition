@@ -6,6 +6,7 @@ import java.util.Random;
 import Cards.EventCard;
 import Cards.EventCard.CardEffect;
 import Cards.EventCard.EventCardType;
+import Cards.PropertyCard;
 import Spaces.ChanceSpace;
 import Spaces.FreeSpace;
 import Spaces.GoSpace;
@@ -22,12 +23,14 @@ public class Board {
 	
 	private Player[] players;
 	private static Space[] spaces;
+	private static PropertyCard[] propertyCards;
 	private static EventCard[] harmonyCards;
 	private static EventCard[] chanceCards;
 	public static boolean initialised = false;
 	private Player currentPlayer;
 	
 	public static final int BOARDSPACES  = 40;
+	public static final int PROPNUM      = 28;
 	public static final int EVENTCARDNUM = 16;
 	
 	public Board(Player[] players) {
@@ -45,7 +48,20 @@ public class Board {
 		
 		//initialises player positions
 		for (Player player : players) {
-			player.move(this);
+			player.addBoard(this);
+			player.setPosition(0, this);
+		}
+		
+		//initialises property cards
+		propertyCards = new PropertyCard[PROPNUM];
+		int propCardIndex = 0;
+		for (Space space : getSpaces()) {
+			if (space instanceof Property) {
+				Property aProperty = (Property)space;
+				propertyCards[propCardIndex] = new PropertyCard(
+						aProperty, this);
+				propCardIndex++;
+			}
 		}
 	}
 	
@@ -69,6 +85,16 @@ public class Board {
 	
 	public Space[] getSpaces() {
 		return spaces;
+	}
+	
+	public PropertyCard getPropertyCard(String propertyName) {
+		for (PropertyCard propCard : propertyCards) {
+			if (propCard.getProperty().getName().equals(propertyName)) {
+				return propCard;
+			}
+		}
+		
+		return null;
 	}
 	
 	public void completeTurn() {
@@ -137,11 +163,18 @@ public class Board {
 		boardPosition = player.getBoardPosition();
 		space         = spaces[boardPosition];
 		
-		for (int i = 0; i < Space.DISPLAYLINES; i++) {
-			space.display(i, false);
-			System.out.print("\n");
+		if (space instanceof Property
+			&& ((Property)space).getOwner() == null) {
+			
+			getPropertyCard(((Property)space).getName()).display();
+		} else if (!(space instanceof ChanceSpace
+		          || space instanceof HarmonySpace)) {
+			for (int i = 0; i < Space.DISPLAYLINES; i++) {
+				space.display(i, false);
+				System.out.print("\n");
+			}
+			System.out.println();
 		}
-		System.out.println();
 		
 		space.playerLands(player);
 	}

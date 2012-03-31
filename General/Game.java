@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 import Spaces.MoonSpace;
 import Spaces.Property;
-import Spaces.Space;
 import Spaces.Property.PropertyType;
 
 public class Game {
@@ -71,11 +70,13 @@ public class Game {
 				System.out.println(currentPlayer.getName() + 
 						" misses this turn");
 				currentPlayer.setMissTurn(false);
-			} else if (currentPlayer.isBanished()) {
+			} else if (currentPlayer.getBanished() > 0) {
 				handleBanishment(currentPlayer);
 			} else {
 				System.out.println(currentPlayer.getName() + "'s turn: " +
-						currentPlayer.getCash() +" bits");
+						currentPlayer.getCash() +" bits, " 
+						+ currentPlayer.getBanishmentAvoidChances() 
+						+ " Moon Escape chances left");
 				handlePlayerInput(currentPlayer);
 			}
 			
@@ -135,7 +136,7 @@ public class Game {
 	
 	public static void movePlayer(Player player) {
 		rollDice(player);
-		player.move(board);
+		player.move();
 	}
 	
 	public static void buyStable(Player player) {
@@ -182,18 +183,11 @@ public class Game {
 			handlePlayerInput(player);
 			return;
 		}
+
+		stablePrice = board.findPropertyIndex(property.getName())
+				      / (Board.BOARDSPACES / 4) + 1;
 		
-		int i = 0;
-		for (Space space : board.getSpaces()) {
-			if (space instanceof Property) {
-				if (((Property)space).equals(property)) {
-					break;
-				}
-			}
-			i++;
-		}
-		
-		stablePrice = 50 * i / (Board.BOARDSPACES / 4);
+		stablePrice *= 50;
 		
 		Property[] groupProperties;
 		groupProperties = board.getGroupProperties(property);
@@ -292,6 +286,7 @@ public class Game {
 		System.out.println("\nProperties you own:");
 		for (Property property : properties) {
 			System.out.println(property);
+			board.getPropertyCard(property.getName()).display();
 		}
 		
 		handlePlayerInput(player);
@@ -308,7 +303,7 @@ public class Game {
 		
 		System.out.println("Properties you own:");
 		for (int i = 0; i < properties.length; i++) {
-			System.out.println(String.format("%s) %s", (i+1), properties[i]));
+			System.out.println(String.format("%s) %s\n", (i+1), properties[i]));
 		}
 		
 		return properties.length;
@@ -353,7 +348,7 @@ public class Game {
 					"this? Y/N");
 			if (Util.getResponse()) {
 				player.changeBanishmentAvoidChances(-1);
-				player.setBanished(false);
+				player.setBanished(0);
 				System.out.println("You're no longer banished. " +
 						"You have "
 						+ player.getBanishmentAvoidChances() + 
@@ -367,7 +362,7 @@ public class Game {
 					"paying 50 bits. Would you like to pay? Y/N");
 			if (Util.getResponse()) {
 				player.changeCash(-50);
-				player.setBanished(false);
+				player.setBanished(0);
 				System.out.println("You're no longer banished");
 				return;
 			}
@@ -384,11 +379,12 @@ public class Game {
 		int[] lastRolls = player.getLastRolls();
 		if (lastRolls[0] == lastRolls[1]) {
 			System.out.println("You escaped!");
-			player.setBanished(false);
-			player.move(board);
+			player.setBanished(0);
+			player.move();
 		} else {
 			System.out.println("You remain on the Moon until at least " +
 					"your next turn");
+			player.setBanished(player.getBanished() - 1);
 		}
 	}
 	

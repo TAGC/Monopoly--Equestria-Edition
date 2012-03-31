@@ -6,12 +6,12 @@ public class GoToMoonSpace implements Space {
 	
 	@Override
 	public void playerLands(Player player) {
-		player.setBanished(true);
-		
 		String outcome;
 		outcome = String.format("*%s is banished to the Moon!*",
 				player.getName());
 		System.out.println(outcome);
+		
+		player.banish();
 	}
 
 	@Override

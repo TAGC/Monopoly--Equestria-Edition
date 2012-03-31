@@ -10,13 +10,14 @@ import Spaces.Space;
 
 public class Player {
 	private String name;
+	private Board board;
 	private int cash;
 	private int boardPosition;
 	private int lastRoll1, lastRoll2;
 	private int banishmentAvoidChances;
 	private int doubleStreak;
 	private boolean bankrupt;
-	private boolean banished;
+	private int banished;
 	private boolean missTurn;
 	private boolean extraTurn;
 	private List<Property> ownedProperties;
@@ -25,7 +26,7 @@ public class Player {
 		this.name              = name;
 		cash                   = startCash;
 		bankrupt               = false;
-		banished               = false;
+		banished               = 0;
 		missTurn               = false;
 		extraTurn              = false;
 		lastRoll1              = 0;
@@ -34,6 +35,10 @@ public class Player {
 		doubleStreak           = 0;
 		boardPosition          = 0; //Pass Go
 		ownedProperties        = new LinkedList<Property>();
+	}
+	
+	public void addBoard(Board board) {
+		this.board = board;
 	}
 	
 	public String getName() {
@@ -66,7 +71,7 @@ public class Player {
 		return bankrupt;
 	}
 	
-	public boolean isBanished() {
+	public int getBanished() {
 		return banished;
 	}
 	
@@ -82,7 +87,7 @@ public class Player {
 		this.extraTurn = extraTurn;
 	}
 	
-	public void setBanished(boolean banished) {
+	public void setBanished(int banished) {
 		this.banished = banished;
 	}
 	
@@ -98,7 +103,7 @@ public class Player {
 		banishmentAvoidChances += change;
 	}
 	
-	public void move(Board board) {
+	public void move() {
 		if (isBankrupt()) return;
 		
 		int[] rolls = getLastRolls();
@@ -109,7 +114,7 @@ public class Player {
 				System.out.println("You've rolled three straight " +
 						"doubles; go directly to the Moon, do not Pass Go, " +
 						"do not collect 200 bits");
-				setBanished(true);
+				banish();
 				return;
 			} else {
 				setExtraTurn(true);
@@ -179,6 +184,8 @@ public class Player {
 	}
 	
 	public void banish() {
+		Space currentSpace, moonSpace;
+		
 		if (getBanishmentAvoidChances() > 0) {
 			System.out.println("Would you like to spend a " +
 					"banishment avoid chance to avoid banishment?");
@@ -188,8 +195,15 @@ public class Player {
 				return;
 			} 
 		}
-		setBanished(true);
-		System.out.println("*" + getName() + " is banished*");
+		
+		currentSpace = board.getSpaces()[getBoardPosition()];
+		currentSpace.removePlayer(this);
+		
+		moonSpace = board.getSpaces()[Board.BOARDSPACES / 4];
+		moonSpace.addPlayer(this);
+		setBanished(3);
+		setExtraTurn(false);
+		setMissTurn(false);
 	}
 	
 	@Override
